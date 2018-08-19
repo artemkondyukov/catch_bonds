@@ -1,0 +1,17 @@
+[
+	{
+		"pattern": "8086",
+		"atoms": [
+			{"pattern": "4965"},
+			{"pattern": "5094"},
+			{"pattern": "5612"},
+			{"pattern": "5440"},
+			{"pattern": "5690"},
+			{"pattern": "6952"},
+			{"pattern": "7003"},
+			{"pattern": "7533"},
+			{"pattern": "8048"},
+			{"pattern": "8080"}
+		]
+	}
+]
