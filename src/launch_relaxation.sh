@@ -1,4 +1,4 @@
-for keyword in REPETITIONS FORCES DIVISOR STRUCTURE MINDIST MAXDIST PIDMD_DIR BOX OUTDIR LOG
+for keyword in REPETITIONS FORCES DIVISOR STRUCTURE MINDIST MAXDIST PIDMD_DIR BOX OUTDIR LOG QUEUE
 do
   if [ -z ${!keyword} ]; then echo "$keyword is unset"; exit; fi
 done
@@ -23,4 +23,12 @@ do
   done
   cd ../
   mv $rep $OUTDIR/
+  cd $OUTDIR/$rep
+  for force in $(ls)
+  do
+    cd $force
+    qsub -b y -cwd -N DMD_R_"$STRUCTURE" -q $QUEUE $PIDMD_DIR/pdmd.linux -i $basedir/inputs/relaxation.input -p "$STRUCTURE"_param -s "$STRUCTURE"_state -c "$STRUCTURE"_cons
+    cd ../
+  done
+  cd $basedir/
 done
