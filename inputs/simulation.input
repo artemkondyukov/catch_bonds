@@ -1,0 +1,11 @@
+HEAT_X_C  0.1
+T_NEW       0.5  	
+T_LIMIT     0.5
+RESTART_FILE restart
+ECHO_FILE  echo	
+MOVIE_FILE movie
+RESTART_DT 1000
+ECHO_DT     	100            	
+MOVIE_DT    	100
+START_TIME  0	
+MAX_TIME   10001
