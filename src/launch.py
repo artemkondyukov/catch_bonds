@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
             pdb_parser = PDBParser()
             s = pdb_parser.get_structure(0, "{}/infiles/in.pdb".format(args.structure_name))
-            distance_to_dummy = (args.min_dir + args.max_dirs) / 2
+            distance_to_dummy = (args.min_dist + args.max_dist) / 2
             add_dummies_to_pdb(s, args.c1_res, args.c2_res, distance_to_dummy, MAX_ANGLE)
 
             pdb_io = PDBIO()
