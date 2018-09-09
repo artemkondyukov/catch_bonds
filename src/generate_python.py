@@ -1,30 +1,28 @@
 import argparse
-import json
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-c", "--conf", type=str, required=True,
-                    help="path to conf.json with number of dummy atom and atoms to pull")
-parser.add_argument("-o", "--out", type=str, required=True, help="path to out constraints file")
-parser.add_argument("-n", "--min", type=int, required=True, help="max distance with the lowest potential energy")
-parser.add_argument("-x", "--max", type=int, required=True, help="min distance with 0 potential energy")
-parser.add_argument("-s", "--step", type=float, required=True, help="potential step, in reduced piDMD units")
-args = parser.parse_args()
 
-atmfile = args.conf
-outfile = args.out
-mindist = args.min
-maxdist = args.max
-nrgstep = args.step
+def process_constraints_template(constraints_filename,
+                                 processed_constraints_filename,
+                                 min_dist,
+                                 max_dist,
+                                 energy_step):
+    with open(constraints_filename, "r") as f_in, open(processed_constraints_filename, "w") as f_out:
+        for line in f_in:
+            constraint = line.split()
+            first, second = constraint[0], constraint[1]
 
-dummies = json.load(open(atmfile))
-with open(outfile, "w") as f:
-    for dummy in dummies:
-        dm = dummy["pattern"]
-        print(dm)
-        for atom in dummy["atoms"]:
-            at = atom["pattern"]
-            cur_line = "{} {} 2.4 ".format(dm, at)
-            string = ""
-            for i in range(mindist, maxdist + 1):
-                string += "{} {} ".format(i, -nrgstep)
-            f.write(cur_line + string + "\n")
+            cur_line = "{} {} 2.4".format(first, second)
+            for i in range(min_dist, max_dist + 1):
+                cur_line += "{} {} ".format(i, -energy_step)
+            f_out.write(cur_line + "\n")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--conf", type=str, required=True, help="path to file with atom pair constraints")
+    parser.add_argument("-o", "--out", type=str, required=True, help="path to out constraints file")
+    parser.add_argument("-n", "--min", type=int, required=True, help="max distance with the lowest potential energy")
+    parser.add_argument("-x", "--max", type=int, required=True, help="min distance with 0 potential energy")
+    parser.add_argument("-s", "--step", type=float, required=True, help="potential step, in reduced piDMD units")
+    args = parser.parse_args()
+    process_constraints_template(args.conf, args.out, args.min, args.max, args.step)
