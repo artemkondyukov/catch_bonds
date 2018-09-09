@@ -1,8 +1,12 @@
 import argparse
+from Bio.PDB import PDBIO, PDBParser
 import os
 import subprocess
 
 from generate_python import process_constraints_template
+from pdb_get_pulling import add_dummies_to_pdb
+
+MAX_ANGLE = 30
 
 
 if __name__ == "__main__":
@@ -12,6 +16,8 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--force_levels", type=int, required=True, help="Number of force levels to apply")
     parser.add_argument("-d", "--divisor", type=int, required=True, help="Scale factor of applied force")
     parser.add_argument("-s", "--structure_name", type=str, required=True)
+    parser.add_argument("-ca", "--c1_res", type=int, required=True, help="Number of a residue from chain A to pull")
+    parser.add_argument("-cb", "--c2_res", type=int, required=True, help="Number of a residue from chain B to pull")
     parser.add_argument("-n", "--min_dist", type=int, required=True, help="Maximum distance of lowest energy")
     parser.add_argument("-x", "--max_dist", type=int, required=True, help="Minimum distance with 0 energy")
     parser.add_argument("-b", "--box", type=int, required=True, help="Size of the simulation box")
@@ -39,8 +45,18 @@ if __name__ == "__main__":
             param_filename = os.path.join(cur_dir, "param")
             state_filename = os.path.join(cur_dir, "state")
 
+            pdb_parser = PDBParser()
+            s = pdb_parser.get_structure(0, "{}/infiles/in.pdb".format(args.structure_name))
+            distance_to_dummy = (args.min_dir + args.max_dirs) / 2
+            add_dummies_to_pdb(s, args.c1_res, args.c2_res, distance_to_dummy, MAX_ANGLE)
+
+            pdb_io = PDBIO()
+            pdb_io.set_structure(s)
+            in_pdb_filename = os.path.join(cur_dir, "in.pdb")
+            pdb_io.save(in_pdb_filename)
+
             launch_params = ["-P", os.path.join(args.pidmd_dir, "parameter"),
-                             "-I", "{}/infiles/in.pdb".format(args.structure_name),
+                             "-I", in_pdb_filename,
                              "-D", str(args.box),
                              "-p", param_filename,
                              "-s", state_filename
