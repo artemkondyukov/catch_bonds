@@ -78,8 +78,15 @@ def add_dummies_to_pdb(pdb_structure, chain_a_res_n, chain_b_res_n, target_len, 
     chain_a_dummy_basic = chain_a_ca_coord + diff_vector_target_len
     chain_b_dummy_basic = chain_b_ca_coord - diff_vector_target_len
 
-    c_dummy_ca_coord = sample_perpendicular_vector(diff_vector_target_len, max_angle) + chain_a_dummy_basic
-    d_dummy_ca_coord = sample_perpendicular_vector(diff_vector_target_len, max_angle) + chain_b_dummy_basic
+    c_dummy_perpendicular_vector = None
+    while c_dummy_perpendicular_vector is None:
+        c_dummy_perpendicular_vector = sample_perpendicular_vector(diff_vector_target_len, max_angle)
+    c_dummy_ca_coord = chain_a_dummy_basic + c_dummy_perpendicular_vector
+
+    d_dummy_perpendicular_vector = None
+    while d_dummy_perpendicular_vector is None:
+        d_dummy_perpendicular_vector = sample_perpendicular_vector(diff_vector_target_len, max_angle)
+    d_dummy_ca_coord = chain_b_dummy_basic + d_dummy_perpendicular_vector
 
     chain_d = Chain.Chain("D")
     if len(chain_c.child_list) != 1:
