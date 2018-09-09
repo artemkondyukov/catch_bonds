@@ -1,9 +1,9 @@
 import argparse
 import json
-import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-c", "--conf", type=str, required=True, help="path to conf.json with number of dummy atom and atoms to pull")
+parser.add_argument("-c", "--conf", type=str, required=True,
+                    help="path to conf.json with number of dummy atom and atoms to pull")
 parser.add_argument("-o", "--out", type=str, required=True, help="path to out constraints file")
 parser.add_argument("-n", "--min", type=int, required=True, help="max distance with the lowest potential energy")
 parser.add_argument("-x", "--max", type=int, required=True, help="min distance with 0 potential energy")
@@ -28,4 +28,3 @@ with open(outfile, "w") as f:
             for i in range(mindist, maxdist + 1):
                 string += "{} {} ".format(i, -nrgstep)
             f.write(cur_line + string + "\n")
-		

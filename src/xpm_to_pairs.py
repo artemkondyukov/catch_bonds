@@ -21,5 +21,5 @@ data_array = np.concatenate(data_arrays)
 contacts_matrix = data_array <= 'N'
 
 for f, s in zip(*np.where(contacts_matrix.mean(axis=0))):
-    if f < args.fst and s >= args.fst:
+    if f < args.fst <= s:
             print(f, s)
